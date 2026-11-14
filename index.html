@@ -746,33 +746,31 @@
             dragOffset: { x: 0, y: 0 },
             isResizing: false,
             resizeDir: null,         // 'nw' | 'ne' | 'sw' | 'se' | 'e' | 's'
-        // Safe Google AdSense Slot Initializer (Prevents availableWidth=0 TagError)
-        function initAdSenseSlots() {
-            const slots = document.querySelectorAll('ins.adsbygoogle');
-            slots.forEach((slot) => {
-                if (slot.dataset.adsInitialized === 'true') return;
-                const parentWidth = slot.parentElement ? slot.parentElement.getBoundingClientRect().width : 0;
-                if (parentWidth > 0 && slot.offsetParent !== null) {
-                    slot.dataset.adsInitialized = 'true';
-                    try {
-                        (window.adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch (e) {
-                        // Ignore placeholder client ID errors during local/preview testing
-                    }
-                }
-            });
-        }
+            resizeStart: { x: 0, y: 0, origX: 0, origY: 0, origW: 0, origH: 0 },
+            draggedPageNum: null,    // Page number currently being dragged in thumbnails
+            activeRenderTask: null,  // Active PDF.js canvas render task (prevents concurrent canvas collision)
+            renderSequence: 0,       // Sequence counter to discard stale async page renders
+            historyPast: [],         // Undo stack
+            historyFuture: [],       // Redo stack
+            typingHistoryTimer: null
+        };
 
-        // Initialize Icons, Drag-and-Drop Zones, AdSense Slots, and Default Multi-Page Sample PDF on Load
-        let appInitialized = false;
-        function initApp() {
-            if (appInitialized) return;
-            appInitialized = true;
-            lucide.createIcons();
-            setupDragAndDropZones();
-            loadSampleDocument(false);
-            requestAnimationFrame(() => initAdSenseSlots());
-        }
+        // DOM References
+        const renderCanvas = document.getElementById('pdf-render-canvas');
+        const renderCtx = renderCanvas.getContext('2d');
+        const pageWrapper = document.getElementById('page-wrapper');
+        const overlayLayer = document.getElementById('overlay-layer');
+        const thumbnailsContainer = document.getElementById('thumbnails-container');
+        const canvasScrollContainer = document.getElementById('canvas-scroll-container');
+
+        // Mobile & Tablet Navigation Drawer Toggle
+        function toggleMobileNav(forceState) {
+            const menu = document.getElementById('mobile-nav-menu');
+            if (typeof forceState === 'boolean') {
+                menu.classList.toggle('hidden', !forceState);
+            } else {
+                menu.classList.toggle('hidden');
+            }
         }
 
         // Custom Toast Notification Helper (Replaces alert())
@@ -2184,7 +2182,24 @@
             }
         }
 
-        // Initialize Icons, Drag-and-Drop Zones, and Default Multi-Page Sample PDF on Load
+        // Safe Google AdSense Slot Initializer (Prevents availableWidth=0 TagError)
+        function initAdSenseSlots() {
+            const slots = document.querySelectorAll('ins.adsbygoogle');
+            slots.forEach((slot) => {
+                if (slot.dataset.adsInitialized === 'true') return;
+                const parentWidth = slot.parentElement ? slot.parentElement.getBoundingClientRect().width : 0;
+                if (parentWidth > 0 && slot.offsetParent !== null) {
+                    slot.dataset.adsInitialized = 'true';
+                    try {
+                        (window.adsbygoogle = window.adsbygoogle || []).push({});
+                    } catch (e) {
+                        // Ignore placeholder client ID errors during local/preview testing
+                    }
+                }
+            });
+        }
+
+        // Initialize Icons, Drag-and-Drop Zones, AdSense Slots, and Default Multi-Page Sample PDF on Load
         let appInitialized = false;
         function initApp() {
             if (appInitialized) return;
@@ -2192,6 +2207,7 @@
             lucide.createIcons();
             setupDragAndDropZones();
             loadSampleDocument(false);
+            requestAnimationFrame(() => initAdSenseSlots());
         }
 
         if (document.readyState === 'loading') {
@@ -2205,6 +2221,7 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(async () => {
+                initAdSenseSlots();
                 if (state.pdfJsDoc && state.autoFit) {
                     const oldScale = state.scale;
                     const newScale = await computeResponsiveScale();
