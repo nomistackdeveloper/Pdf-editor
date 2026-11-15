@@ -329,7 +329,7 @@
 
       <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
         <button type="button" id="hero-upload-btn" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition">
-          Fucking File
+          Choose PDF File
         </button>
         <button type="button" id="loadSampleBtn" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold border border-slate-200 transition">
           Try Multi-Page Sample
@@ -1233,6 +1233,9 @@
             if (state.selectedId !== ann.id) {
               state.selectedId = ann.id;
               updatePropertiesBar();
+              annotationsLayer.querySelectorAll('.pdf-annotation').forEach((node) => {
+                node.classList.toggle('selected', node.dataset.id === ann.id);
+              });
             }
           }, { passive: true });
 
@@ -1296,9 +1299,18 @@
           e.stopPropagation();
           if (state.selectedId !== ann.id) {
             state.selectedId = ann.id;
-            if (ann.type === 'text') state.focusTextId = ann.id;
             updatePropertiesBar();
-            renderAnnotationsLayer();
+            if (ann.type !== 'text') {
+              renderAnnotationsLayer();
+            } else {
+              annotationsLayer.querySelectorAll('.pdf-annotation').forEach((node) => {
+                node.classList.toggle('selected', node.dataset.id === ann.id);
+              });
+              const box = el.querySelector('.text-editable-box');
+              if (box && document.activeElement !== box) {
+                focusEditableTextBox(box, ann.text === 'Type text here');
+              }
+            }
           }
         });
 
@@ -2185,11 +2197,19 @@
     });
 
     let resizeTimer = null;
+    let lastWindowWidth = window.innerWidth;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        if (document.activeElement && (document.activeElement.classList.contains('text-editable-box') || document.activeElement.isContentEditable)) {
+          return;
+        }
+        if (window.innerWidth === lastWindowWidth) {
+          return;
+        }
+        lastWindowWidth = window.innerWidth;
         if (state.pdfJsDoc) renderCurrentPage();
-      }, 150);
+      }, 250);
     });
 
     (async function initApp() {
