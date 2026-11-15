@@ -121,6 +121,10 @@
       transition: box-shadow 0.15s ease, outline-color 0.15s ease;
     }
 
+    .pdf-annotation.text-annotation {
+      user-select: text;
+    }
+
     /* Desktop: grab cursor for mouse drag */
     @media (pointer: fine) and (min-width: 768px) {
       .pdf-annotation {
@@ -128,6 +132,9 @@
       }
       .pdf-annotation:active {
         cursor: grabbing;
+      }
+      .pdf-annotation.text-annotation.selected {
+        cursor: text;
       }
     }
 
@@ -150,6 +157,25 @@
       box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.28);
     }
 
+    .text-drag-bar {
+      position: absolute;
+      top: -22px;
+      right: 0;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px 4px 0 0;
+      cursor: grab;
+      user-select: none;
+      letter-spacing: 0.03em;
+      z-index: 45;
+    }
+    .text-drag-bar:active {
+      cursor: grabbing;
+    }
+
     /* Live HUD badge above selected item */
     .annotation-hud {
       position: absolute;
@@ -168,7 +194,7 @@
       z-index: 45;
     }
 
-    /* Desktop Resize Handles (hidden on touch/mobile so users use buttons cleanly) */
+    /* Desktop Resize Handles */
     .resize-handle {
       position: absolute;
       width: 11px;
@@ -194,7 +220,7 @@
     .resize-handle.e  { top: 50%; right: -6px; transform: translateY(-50%); cursor: ew-resize; }
     .resize-handle.s  { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
 
-    /* Crop Box Handles (works on both desktop & touch inside the crop modal) */
+    /* Crop Box Handles */
     .crop-handle {
       position: absolute;
       width: 18px;
@@ -217,15 +243,18 @@
 
     .text-editable-box {
       outline: none;
-      min-width: 24px;
+      min-width: 40px;
       min-height: 1.2em;
       white-space: pre-wrap;
       word-break: break-word;
       line-height: 1.25;
       padding: 2px 4px;
+      user-select: text !important;
+      -webkit-user-select: text !important;
+      cursor: text;
+      -webkit-tap-highlight-color: rgba(37,99,235,0.2);
     }
 
-    /* Dropzone highlight */
     .drop-active {
       border-color: #2563eb !important;
       background-color: rgba(37, 99, 235, 0.06) !important;
@@ -300,7 +329,7 @@
 
       <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
         <button type="button" id="hero-upload-btn" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition">
-          Select PDF File
+          Fucking File
         </button>
         <button type="button" id="loadSampleBtn" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold border border-slate-200 transition">
           Try Multi-Page Sample
@@ -309,7 +338,7 @@
     </div>
   </section>
 
-  <!-- Policy-Compliant Google AdSense Banner #1 (Outside Editor Controls) -->
+  <!-- Google AdSense Banner #1 -->
   <aside aria-label="Advertisement" class="max-w-5xl mx-auto px-4 sm:px-6 mb-8 w-full min-h-[90px]">
     <div class="w-full min-h-[90px] bg-white border border-slate-200/80 rounded-xl p-2 flex flex-col items-center justify-center overflow-hidden">
       <span class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Advertisement</span>
@@ -335,7 +364,7 @@
             <span>Select</span>
           </button>
 
-          <button type="button" data-tool="text" class="tool-btn bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Click on PDF page to add text">
+          <button type="button" data-tool="text" class="tool-btn bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Click on PDF page to add text (auto-matches PDF font size)">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M12 6v14" /></svg>
             <span>Add Text</span>
           </button>
@@ -353,7 +382,6 @@
 
         <!-- Center Undo / Redo & Zoom Controls -->
         <div class="flex flex-wrap items-center gap-1.5">
-          <!-- Undo / Redo -->
           <div class="flex items-center bg-slate-800 rounded-lg p-0.5">
             <button type="button" id="undo-btn" disabled class="px-2 py-1 rounded-md text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 transition" title="Undo (Ctrl+Z)">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4" /></svg>
@@ -365,7 +393,6 @@
             </button>
           </div>
 
-          <!-- Zoom Controls -->
           <div class="flex items-center bg-slate-800 rounded-lg p-0.5">
             <button type="button" id="zoom-out-btn" class="px-2 py-1 rounded-md text-xs font-bold text-slate-200 hover:bg-slate-700 transition" title="Zoom Out">−</button>
             <button type="button" id="zoom-fit-btn" class="px-2 py-1 rounded-md text-[11px] font-semibold text-blue-300 hover:bg-slate-700 transition" title="Fit Page to Screen">Fit</button>
@@ -383,7 +410,7 @@
         </div>
       </div>
 
-      <!-- Contextual Properties & Mobile/Desktop Positioning Bar -->
+      <!-- Contextual Properties & Mobile Positioning Bar -->
       <div id="properties-bar" class="bg-slate-50 border-b border-slate-200 px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div id="default-tool-hint" class="text-slate-600 flex items-center gap-2">
           <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
@@ -395,10 +422,16 @@
           <div class="flex flex-wrap items-center gap-2">
             <!-- Text Specific Controls -->
             <div id="text-props" class="hidden flex-wrap items-center gap-1.5">
-              <label class="font-semibold text-slate-600">Size:</label>
-              <input type="number" id="prop-font-size" min="6" max="144" value="16" class="w-14 px-1.5 py-1 rounded border border-slate-300 bg-white text-slate-800 font-semibold" />
+              <label class="font-semibold text-slate-600">Size (pt):</label>
+              <input type="number" id="prop-font-size" min="4" max="200" step="0.5" value="12" class="w-16 px-1.5 py-1 rounded border border-slate-300 bg-white text-slate-800 font-semibold" />
+              <div class="flex items-center bg-white border border-slate-300 rounded overflow-hidden">
+                <button type="button" id="font-size-minus" class="px-1.5 py-1 hover:bg-slate-100 font-bold text-slate-700" title="Decrease Font Size">A−</button>
+                <button type="button" id="font-size-plus" class="px-1.5 py-1 hover:bg-slate-100 font-bold text-slate-700 border-l border-slate-200" title="Increase Font Size">A+</button>
+              </div>
               <input type="color" id="prop-font-color" value="#0f172a" class="w-7 h-7 p-0.5 rounded border border-slate-300 bg-white cursor-pointer" title="Text Color" />
               <button type="button" id="prop-font-bold" class="px-2 py-1 rounded border border-slate-300 bg-white font-bold text-slate-700 hover:bg-slate-100" title="Toggle Bold">B</button>
+              <button type="button" id="prop-copy-text" class="px-2 py-1 rounded border border-slate-300 bg-white font-semibold text-slate-700 hover:bg-slate-100" title="Copy Text">Copy</button>
+              <button type="button" id="prop-paste-text" class="px-2 py-1 rounded border border-slate-300 bg-white font-semibold text-slate-700 hover:bg-slate-100" title="Paste Text">Paste</button>
             </div>
 
             <!-- Box / Image Custom Size & Crop Controls -->
@@ -408,7 +441,6 @@
                 <span>Crop</span>
               </button>
 
-              <!-- Free Custom Width & Height Inputs (User can type ANY custom size!) -->
               <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-md px-1.5 py-0.5">
                 <span class="text-[11px] font-semibold text-slate-500">W:</span>
                 <input type="number" id="prop-box-width" min="10" max="2000" value="150" class="w-14 text-xs font-mono font-semibold text-slate-800 focus:outline-none" title="Custom Width (pt)" />
@@ -417,13 +449,11 @@
                 <input type="number" id="prop-box-height" min="10" max="2000" value="100" class="w-14 text-xs font-mono font-semibold text-slate-800 focus:outline-none" title="Custom Height (pt)" />
               </div>
 
-              <!-- Aspect Ratio Lock Toggle (Default UNLOCKED / Free Size as requested) -->
-              <button type="button" id="prop-aspect-lock" class="px-2 py-1 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 font-semibold flex items-center gap-1 transition" title="Toggle Aspect Ratio Lock (Currently Free Custom Size)">
+              <button type="button" id="prop-aspect-lock" class="px-2 py-1 rounded-md border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 font-semibold flex items-center gap-1 transition" title="Toggle Aspect Ratio Lock">
                 <span id="aspect-lock-icon">🔓</span>
                 <span id="aspect-lock-label">Free Size</span>
               </button>
 
-              <!-- Quick Size +/- Stepper Buttons for Mobile & Precision -->
               <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-md p-0.5">
                 <button type="button" id="size-w-minus" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-slate-700" title="Decrease Width">W−</button>
                 <button type="button" id="size-w-plus" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-slate-700" title="Increase Width">W+</button>
@@ -433,7 +463,7 @@
             </div>
           </div>
 
-          <!-- 4-Way Hold-to-Move Nudge D-Pad (Essential for Mobile & Precision Placement) -->
+          <!-- 4-Way Hold-to-Move Nudge D-Pad -->
           <div class="flex flex-wrap items-center gap-1.5">
             <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg px-1.5 py-0.5 shadow-2xs">
               <span class="text-[11px] font-semibold text-slate-500 mr-0.5">Move:</span>
@@ -442,7 +472,7 @@
               <button type="button" data-nudge="down" class="nudge-btn w-7 h-7 rounded bg-slate-100 hover:bg-blue-600 hover:text-white active:bg-blue-700 font-bold text-slate-800 flex items-center justify-center transition" title="Move Down">▼</button>
               <button type="button" data-nudge="right" class="nudge-btn w-7 h-7 rounded bg-slate-100 hover:bg-blue-600 hover:text-white active:bg-blue-700 font-bold text-slate-800 flex items-center justify-center transition" title="Move Right">▶</button>
 
-              <select id="nudge-step-select" class="ml-1 text-[11px] font-semibold bg-slate-100 border border-slate-200 rounded px-1 py-1 text-slate-700" title="Step distance per press">
+              <select id="nudge-step-select" class="ml-1 text-[11px] font-semibold bg-slate-100 border border-slate-200 rounded px-1 py-1 text-slate-700" title="Step distance">
                 <option value="1">1px</option>
                 <option value="5" selected>5px</option>
                 <option value="15">15px</option>
@@ -456,10 +486,8 @@
         </div>
       </div>
 
-      <!-- Workspace Body: Left/Top Pages Panel + Center Canvas Stage -->
+      <!-- Workspace Body -->
       <div class="flex flex-col md:flex-row min-h-[560px]">
-
-        <!-- Pages Sidebar (Horizontal scroll on Mobile, Vertical Sidebar on Desktop) -->
         <aside id="pages-sidebar" class="w-full md:w-60 bg-slate-100 border-b md:border-b-0 md:border-r border-slate-200 p-3 flex flex-col gap-2.5 shrink-0">
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Pages (<span id="page-count-badge">1</span>)</span>
@@ -473,12 +501,9 @@
             </div>
           </div>
 
-          <div id="thumbnails-container" class="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto md:max-h-[560px] pb-1 no-scrollbar">
-            <!-- Thumbnails injected dynamically -->
-          </div>
+          <div id="thumbnails-container" class="flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto md:max-h-[560px] pb-1 no-scrollbar"></div>
         </aside>
 
-        <!-- Main PDF Canvas Stage -->
         <div id="canvas-scroll-container" class="flex-1 bg-slate-200/80 overflow-auto p-3 sm:p-6 flex items-start justify-center relative min-h-[500px]">
           <div id="pdf-stage-wrapper" class="relative bg-white shadow-xl border border-slate-300 my-auto select-none">
             <canvas id="pdf-render-canvas" class="block"></canvas>
@@ -487,7 +512,7 @@
         </div>
       </div>
 
-      <!-- Bottom Status & Page Navigation Bar -->
+      <!-- Bottom Status Bar -->
       <div class="bg-white border-t border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
         <div class="flex items-center gap-2">
           <button type="button" id="prev-page-btn" class="px-2.5 py-1 rounded-md border border-slate-300 hover:bg-slate-100 font-semibold disabled:opacity-40">← Prev</button>
@@ -496,13 +521,13 @@
         </div>
         <div class="text-[11px] text-slate-500">
           <span class="hidden md:inline">Desktop: Drag items or corner handles freely • </span>
-          <span>Mobile: Pinch to zoom &amp; use Move / Size buttons</span>
+          <span>Mobile: Tap text to type or use Move / Size buttons</span>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Policy-Compliant Google AdSense Banner #2 -->
+  <!-- Google AdSense Banner #2 -->
   <aside aria-label="Advertisement" class="max-w-5xl mx-auto px-4 sm:px-6 mb-12 w-full min-h-[90px]">
     <div class="w-full min-h-[90px] bg-white border border-slate-200/80 rounded-xl p-2 flex flex-col items-center justify-center overflow-hidden">
       <span class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Advertisement</span>
@@ -526,7 +551,7 @@
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold mb-3">T</div>
         <h3 class="font-bold text-slate-900">Add &amp; Edit Text</h3>
-        <p class="mt-1.5 text-xs sm:text-sm text-slate-600">Place new text anywhere on any page, customize font size, weight, and color, or whiteout old text cleanly.</p>
+        <p class="mt-1.5 text-xs sm:text-sm text-slate-600">Place new text anywhere on any page—automatically matching nearby PDF font size—and customize weight and color.</p>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
@@ -549,23 +574,23 @@
     </div>
   </section>
 
-  <!-- Semantic FAQ Section (Matches JSON-LD FAQPage Schema) -->
+  <!-- FAQ Section -->
   <section id="faq" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <h2 class="text-2xl font-extrabold text-slate-900 text-center mb-6">Frequently Asked Questions</h2>
     <div class="space-y-3">
       <details class="bg-white border border-slate-200 rounded-xl p-4" open>
         <summary class="font-bold text-sm sm:text-base text-slate-900 cursor-pointer">Is OrioHub PDF Editor completely free and private?</summary>
-        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes. OrioHub PDF Editor (pdf-editor.oriohub.com) runs 100% locally inside your web browser. Your PDF files and images are never uploaded to any server.</p>
+        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes. OrioHub PDF Editor runs 100% locally inside your web browser. Your PDF files and images are never uploaded to any server.</p>
       </details>
 
       <details class="bg-white border border-slate-200 rounded-xl p-4">
         <summary class="font-bold text-sm sm:text-base text-slate-900 cursor-pointer">Can I crop and freely resize images to any custom size on a PDF page?</summary>
-        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes! Select any placed image and click <strong>Crop</strong> to trim it freely or with preset ratios, then resize it freely to any custom width and height using the corner/edge handles on desktop or exact Width/Height controls on any device.</p>
+        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes! Select any placed image and click <strong>Crop</strong> to trim it freely, then resize it freely to any custom width and height.</p>
       </details>
 
       <details class="bg-white border border-slate-200 rounded-xl p-4">
         <summary class="font-bold text-sm sm:text-base text-slate-900 cursor-pointer">Does OrioHub PDF Editor work on mobile phones and tablets?</summary>
-        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes. Mobile devices get crisp High-DPI PDF rendering, two-finger pinch-to-zoom, and dedicated button-controlled positioning and sizing so scrolling never shifts your layout by accident.</p>
+        <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes. Mobile devices get crisp high-DPI rendering, pinch-to-zoom, and button-controlled positioning and sizing so scrolling never shifts your layout accidentally.</p>
       </details>
     </div>
   </section>
@@ -587,7 +612,6 @@
         <button type="button" id="close-crop-modal-btn" class="text-slate-400 hover:text-white text-lg font-bold px-2">✕</button>
       </div>
 
-      <!-- Aspect Ratio Presets -->
       <div class="px-4 py-2 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div class="flex flex-wrap items-center gap-1.5">
           <span class="font-semibold text-slate-600">Ratio:</span>
@@ -598,19 +622,16 @@
           <button type="button" data-crop-ratio="1.7778" class="crop-ratio-btn px-2.5 py-1 rounded bg-white border border-slate-300 text-slate-700 font-semibold">16:9</button>
         </div>
 
-        <!-- Mobile / Precision Crop Adjust Buttons -->
         <div class="flex items-center gap-1">
-          <button type="button" id="crop-inset-btn" class="px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-200 font-semibold text-slate-700" title="Shrink crop box">Inset −</button>
-          <button type="button" id="crop-expand-btn" class="px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-200 font-semibold text-slate-700" title="Expand crop box">Expand +</button>
+          <button type="button" id="crop-inset-btn" class="px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-200 font-semibold text-slate-700">Inset −</button>
+          <button type="button" id="crop-expand-btn" class="px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-200 font-semibold text-slate-700">Expand +</button>
           <button type="button" id="crop-reset-btn" class="px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-200 font-semibold text-slate-700">Reset</button>
         </div>
       </div>
 
-      <!-- Crop Stage -->
       <div class="flex-1 bg-slate-900 p-4 flex items-center justify-center overflow-auto min-h-[280px]">
         <div id="crop-stage" class="relative inline-block select-none">
           <img id="crop-preview-img" src="" alt="Crop Preview" class="max-h-[55vh] max-w-full block pointer-events-none" />
-          <!-- Selection Box -->
           <div id="crop-box" class="absolute border-2 border-blue-400 bg-blue-500/10 shadow-[0_0_0_9999px_rgba(15,23,42,0.62)] cursor-move touch-none">
             <div class="crop-handle nw" data-crop-dir="nw"></div>
             <div class="crop-handle ne" data-crop-dir="ne"></div>
@@ -635,10 +656,8 @@
   <div id="toast-notification" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-lg border border-slate-700"></div>
 
   <script>
-    // Configure PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // Initialize Google AdSense slots safely only after layout has positive width
     function initAdSenseSlots() {
       requestAnimationFrame(() => {
         const slots = document.querySelectorAll('ins.adsbygoogle');
@@ -646,16 +665,13 @@
           if (!slot.dataset.adsbygoogleStatus && slot.offsetWidth > 0) {
             try {
               (window.adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-              // Ignore duplicate or blocked ad errors gracefully
-            }
+            } catch (e) {}
           }
         });
       });
     }
     window.addEventListener('load', initAdSenseSlots);
 
-    // Application State
     const state = {
       pdfBytes: null,
       pdfJsDoc: null,
@@ -665,8 +681,10 @@
       fitToWidth: true,
       activeTool: 'select',
       selectedId: null,
-      aspectLocked: false, // Default UNLOCKED so user can freely customize image size
-      annotations: [], // { id, page, type: 'text'|'whiteout'|'image', x, y, width, height, text, fontSize, color, bold, dataUrl, naturalWidth, naturalHeight }
+      focusTextId: null,
+      aspectLocked: false,
+      annotations: [],
+      pageTextItemsCache: {},
       history: [],
       historyIndex: -1,
       activeRenderTask: null,
@@ -685,14 +703,12 @@
       }
     };
 
-    // DOM Elements
     const pdfRenderCanvas = document.getElementById('pdf-render-canvas');
     const pdfStageWrapper = document.getElementById('pdf-stage-wrapper');
     const annotationsLayer = document.getElementById('annotations-layer');
     const canvasScrollContainer = document.getElementById('canvas-scroll-container');
     const thumbnailsContainer = document.getElementById('thumbnails-container');
 
-    // Device Mode Helper: Desktop uses drag+handles; Mobile/Touch uses buttons only
     function isMobileOrTouchDevice() {
       return window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
     }
@@ -709,7 +725,72 @@
       return 'ann_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
     }
 
-    // History Snapshot Management (Undo / Redo)
+    async function extractPageTextMetrics(pageNum) {
+      if (state.pageTextItemsCache[pageNum]) return state.pageTextItemsCache[pageNum];
+      if (!state.pdfJsDoc) return [];
+
+      try {
+        const page = await state.pdfJsDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.0 });
+        const textContent = await page.getTextContent();
+        const items = [];
+
+        for (const item of textContent.items) {
+          if (!item.str || !item.str.trim()) continue;
+          const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+          const fontHeight = Math.hypot(tx[2], tx[3]) || Math.hypot(tx[0], tx[1]) || item.height || 12;
+          const roundedSize = Math.max(6, Math.min(144, Math.round(fontHeight * 2) / 2));
+
+          items.push({
+            text: item.str,
+            x: tx[4],
+            y: tx[5] - fontHeight,
+            width: item.width || 20,
+            height: fontHeight,
+            fontSize: roundedSize
+          });
+        }
+        state.pageTextItemsCache[pageNum] = items;
+        return items;
+      } catch (err) {
+        return [];
+      }
+    }
+
+    async function detectFontSizeAtPoint(pageNum, clickX, clickY) {
+      const items = await extractPageTextMetrics(pageNum);
+      if (!items.length) return 12;
+
+      let directHit = null;
+      let minDirectDist = Infinity;
+      for (const item of items) {
+        if (
+          clickX >= item.x - 14 &&
+          clickX <= item.x + item.width + 14 &&
+          clickY >= item.y - 10 &&
+          clickY <= item.y + item.height + 10
+        ) {
+          const dist = Math.abs(clickY - (item.y + item.height / 2));
+          if (dist < minDirectDist) {
+            minDirectDist = dist;
+            directHit = item;
+          }
+        }
+      }
+      if (directHit) return directHit.fontSize;
+
+      let nearest = null;
+      let minDist = Infinity;
+      for (const item of items) {
+        const d = Math.hypot(clickX - (item.x + item.width / 2), clickY - (item.y + item.height / 2));
+        if (d < minDist) {
+          minDist = d;
+          nearest = item;
+        }
+      }
+      return nearest ? nearest.fontSize : 12;
+    }
+
     function pushHistory() {
       const snapshot = {
         pdfBytes: state.pdfBytes ? new Uint8Array(state.pdfBytes) : null,
@@ -735,12 +816,14 @@
       const snap = state.history[index];
       state.annotations = JSON.parse(JSON.stringify(snap.annotations));
       state.selectedId = null;
+      state.focusTextId = null;
       updateHistoryButtons();
       updatePropertiesBar();
 
       if (snap.pdfBytes) {
         const bytesCopy = new Uint8Array(snap.pdfBytes);
         state.pdfBytes = bytesCopy;
+        state.pageTextItemsCache = {};
         state.pdfJsDoc = await pdfjsLib.getDocument({ data: new Uint8Array(bytesCopy) }).promise;
         state.totalPages = state.pdfJsDoc.numPages;
         state.currentPage = Math.min(Math.max(1, snap.currentPage), state.totalPages);
@@ -763,19 +846,6 @@
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && !e.target.isContentEditable && e.target.tagName !== 'INPUT') {
-        if (e.key.toLowerCase() === 'z' && !e.shiftKey) {
-          e.preventDefault();
-          document.getElementById('undo-btn').click();
-        } else if (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey)) {
-          e.preventDefault();
-          document.getElementById('redo-btn').click();
-        }
-      }
-    });
-
-    // Create a clean 3-page sample PDF via pdf-lib
     async function createSamplePDFBytes() {
       const { PDFDocument, StandardFonts, rgb } = PDFLib;
       const doc = await PDFDocument.create();
@@ -819,44 +889,34 @@
       ];
 
       pagesData.forEach((p) => {
-        const page = doc.addPage([595.28, 841.89]); // A4 in points
+        const page = doc.addPage([595.28, 841.89]);
         const { width, height } = page.getSize();
 
-        // Header Accent Bar
         page.drawRectangle({ x: 45, y: height - 95, width: width - 90, height: 48, color: rgb(0.94, 0.96, 1) });
         page.drawText(p.badge, { x: 60, y: height - 76, size: 11, font: fontBold, color: rgb(0.15, 0.39, 0.92) });
-
-        // Title & Subtitle
         page.drawText(p.title, { x: 45, y: height - 145, size: 22, font: fontBold, color: rgb(0.06, 0.09, 0.16) });
         page.drawText(p.subtitle, { x: 45, y: height - 170, size: 12, font: fontReg, color: rgb(0.39, 0.45, 0.55) });
-
         page.drawLine({ start: { x: 45, y: height - 188 }, end: { x: width - 45, y: height - 188 }, thickness: 1, color: rgb(0.88, 0.91, 0.94) });
 
-        // Body Lines
         let cursorY = height - 225;
         p.body.forEach((line) => {
           page.drawText(line, { x: 45, y: cursorY, size: 12, font: fontReg, color: rgb(0.15, 0.2, 0.28) });
           cursorY -= 26;
         });
 
-        // Footer
         page.drawText('Generated locally by OrioHub PDF Editor • pdf-editor.oriohub.com', {
-          x: 45,
-          y: 42,
-          size: 9.5,
-          font: fontReg,
-          color: rgb(0.55, 0.6, 0.68)
+          x: 45, y: 42, size: 9.5, font: fontReg, color: rgb(0.55, 0.6, 0.68)
         });
       });
 
       return await doc.save();
     }
 
-    // Load PDF from Uint8Array
     async function loadPDFFromBytes(bytes, resetAnnotations = true) {
       try {
         const cleanBytes = new Uint8Array(bytes);
         state.pdfBytes = cleanBytes;
+        state.pageTextItemsCache = {};
         state.pdfJsDoc = await pdfjsLib.getDocument({ data: new Uint8Array(cleanBytes) }).promise;
         state.totalPages = state.pdfJsDoc.numPages;
         state.currentPage = 1;
@@ -864,6 +924,7 @@
         if (resetAnnotations) {
           state.annotations = [];
           state.selectedId = null;
+          state.focusTextId = null;
           state.history = [];
           state.historyIndex = -1;
         }
@@ -872,12 +933,10 @@
         await renderThumbnails();
         await renderCurrentPage();
       } catch (err) {
-        console.error(err);
-        showToast('Could not read PDF file. Please try another PDF.');
+        showToast('Could not read PDF file.');
       }
     }
 
-    // Merge additional PDF bytes into current PDF
     async function mergePDFBytes(extraBytes) {
       try {
         const { PDFDocument } = PDFLib;
@@ -888,6 +947,7 @@
 
         const mergedBytes = await baseDoc.save();
         state.pdfBytes = new Uint8Array(mergedBytes);
+        state.pageTextItemsCache = {};
         state.pdfJsDoc = await pdfjsLib.getDocument({ data: new Uint8Array(mergedBytes) }).promise;
         state.totalPages = state.pdfJsDoc.numPages;
         pushHistory();
@@ -895,28 +955,25 @@
         await renderCurrentPage();
         showToast(`Merged ${copiedPages.length} page(s)!`);
       } catch (err) {
-        console.error(err);
         showToast('Failed to merge PDF file.');
       }
     }
 
-    // Render Active PDF Page with High-DPI Crispness & Cancellation Guard
     async function renderCurrentPage() {
       if (!state.pdfJsDoc) return;
       const seq = ++state.renderSequence;
 
       if (state.activeRenderTask) {
-        try {
-          state.activeRenderTask.cancel();
-        } catch (e) {}
+        try { state.activeRenderTask.cancel(); } catch (e) {}
         state.activeRenderTask = null;
       }
 
       const page = await state.pdfJsDoc.getPage(state.currentPage);
       if (seq !== state.renderSequence) return;
 
-      const unscaledViewport = page.getViewport({ scale: 1.0 });
+      extractPageTextMetrics(state.currentPage);
 
+      const unscaledViewport = page.getViewport({ scale: 1.0 });
       if (state.fitToWidth) {
         const containerPadding = window.innerWidth < 768 ? 24 : 48;
         const availableWidth = Math.max(260, canvasScrollContainer.clientWidth - containerPadding);
@@ -939,21 +996,15 @@
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, pdfRenderCanvas.width, pdfRenderCanvas.height);
 
-      const renderTask = page.render({
-        canvasContext: ctx,
-        viewport: renderViewport
-      });
+      const renderTask = page.render({ canvasContext: ctx, viewport: renderViewport });
       state.activeRenderTask = renderTask;
 
       try {
         await renderTask.promise;
       } catch (err) {
         if (err && err.name === 'RenderingCancelledException') return;
-        console.error(err);
       } finally {
-        if (state.activeRenderTask === renderTask) {
-          state.activeRenderTask = null;
-        }
+        if (state.activeRenderTask === renderTask) state.activeRenderTask = null;
       }
 
       if (seq !== state.renderSequence) return;
@@ -969,7 +1020,6 @@
       highlightActiveThumbnail();
     }
 
-    // Render Page Thumbnails
     async function renderThumbnails() {
       if (!state.pdfJsDoc) return;
       thumbnailsContainer.innerHTML = '';
@@ -1013,6 +1063,7 @@
         card.addEventListener('click', () => {
           state.currentPage = pageNum;
           state.selectedId = null;
+          state.focusTextId = null;
           updatePropertiesBar();
           renderCurrentPage();
         });
@@ -1034,7 +1085,6 @@
       });
     }
 
-    // Insert Blank Page
     document.getElementById('add-blank-page-btn').addEventListener('click', async () => {
       if (!state.pdfBytes) return;
       const { PDFDocument } = PDFLib;
@@ -1043,17 +1093,18 @@
       const { width, height } = refPage.getSize();
       doc.insertPage(state.currentPage, [width, height]);
 
-      // Shift annotations after currentPage
       state.annotations.forEach((ann) => {
         if (ann.page > state.currentPage) ann.page += 1;
       });
 
       const updated = await doc.save();
       state.pdfBytes = new Uint8Array(updated);
+      state.pageTextItemsCache = {};
       state.pdfJsDoc = await pdfjsLib.getDocument({ data: new Uint8Array(updated) }).promise;
       state.totalPages = state.pdfJsDoc.numPages;
       state.currentPage += 1;
       state.selectedId = null;
+      state.focusTextId = null;
       pushHistory();
       updatePropertiesBar();
       await renderThumbnails();
@@ -1061,7 +1112,6 @@
       showToast(`Added blank Page ${state.currentPage}`);
     });
 
-    // Delete Page
     async function deletePage(pageNum) {
       if (state.totalPages <= 1) return;
       const { PDFDocument } = PDFLib;
@@ -1074,10 +1124,12 @@
 
       const updated = await doc.save();
       state.pdfBytes = new Uint8Array(updated);
+      state.pageTextItemsCache = {};
       state.pdfJsDoc = await pdfjsLib.getDocument({ data: new Uint8Array(updated) }).promise;
       state.totalPages = state.pdfJsDoc.numPages;
       state.currentPage = Math.min(state.currentPage, state.totalPages);
       state.selectedId = null;
+      state.focusTextId = null;
       pushHistory();
       updatePropertiesBar();
       await renderThumbnails();
@@ -1085,7 +1137,18 @@
       showToast(`Deleted Page ${pageNum}`);
     }
 
-    // Render Annotations Layer
+    function focusEditableTextBox(textDiv, selectAll = false) {
+      requestAnimationFrame(() => {
+        textDiv.focus();
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(textDiv);
+        if (!selectAll) range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      });
+    }
+
     function renderAnnotationsLayer() {
       annotationsLayer.innerHTML = '';
       const pageAnns = state.annotations.filter((a) => a.page === state.currentPage);
@@ -1095,31 +1158,103 @@
         const el = document.createElement('div');
         el.dataset.id = ann.id;
         const isSelected = ann.id === state.selectedId;
-        el.className = `pdf-annotation ${isSelected ? 'selected' : ''}`;
+        el.className = `pdf-annotation ${ann.type === 'text' ? 'text-annotation' : ''} ${isSelected ? 'selected' : ''}`;
         el.style.left = `${ann.x * state.scale}px`;
         el.style.top = `${ann.y * state.scale}px`;
 
         if (ann.type === 'text') {
           const textDiv = document.createElement('div');
           textDiv.className = 'text-editable-box';
-          textDiv.contentEditable = isSelected ? 'true' : 'false';
+          textDiv.contentEditable = 'true';
+          textDiv.spellcheck = false;
           textDiv.textContent = ann.text;
           textDiv.style.fontSize = `${ann.fontSize * state.scale}px`;
           textDiv.style.color = ann.color;
           textDiv.style.fontWeight = ann.bold ? '700' : '400';
 
-          textDiv.addEventListener('input', () => {
-            ann.text = textDiv.textContent;
-          });
-          textDiv.addEventListener('blur', () => {
-            pushHistory();
-          });
-          textDiv.addEventListener('mousedown', (e) => {
-            if (isSelected && document.activeElement === textDiv) {
-              e.stopPropagation();
+          let textChanged = false;
+
+          textDiv.addEventListener('focus', () => {
+            if (state.selectedId !== ann.id) {
+              state.selectedId = ann.id;
+              updatePropertiesBar();
+              annotationsLayer.querySelectorAll('.pdf-annotation').forEach((node) => {
+                node.classList.toggle('selected', node.dataset.id === ann.id);
+              });
             }
           });
+
+          textDiv.addEventListener('input', () => {
+            ann.text = textDiv.innerText;
+            textChanged = true;
+          });
+
+          textDiv.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text/plain');
+            const selection = window.getSelection();
+            if (selection.rangeCount) {
+              const range = selection.getRangeAt(0);
+              range.deleteContents();
+              const textNode = document.createTextNode(pastedText);
+              range.insertNode(textNode);
+              range.setStartAfter(textNode);
+              range.setEndAfter(textNode);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            } else {
+              textDiv.textContent += pastedText;
+            }
+            ann.text = textDiv.innerText;
+            textChanged = true;
+          });
+
+          textDiv.addEventListener('blur', () => {
+            ann.text = textDiv.innerText;
+            if (textChanged) {
+              textChanged = false;
+              pushHistory();
+            }
+          });
+
+          textDiv.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            if (state.selectedId !== ann.id) {
+              state.selectedId = ann.id;
+              updatePropertiesBar();
+              annotationsLayer.querySelectorAll('.pdf-annotation').forEach((node) => {
+                node.classList.toggle('selected', node.dataset.id === ann.id);
+              });
+            }
+          });
+
+          textDiv.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            if (state.selectedId !== ann.id) {
+              state.selectedId = ann.id;
+              updatePropertiesBar();
+            }
+          }, { passive: true });
+
           el.appendChild(textDiv);
+
+          // Desktop drag handle bar
+          if (isSelected && !mobileMode) {
+            const dragTab = document.createElement('div');
+            dragTab.className = 'text-drag-bar';
+            dragTab.textContent = '✥ Drag';
+            dragTab.title = 'Drag to move text box';
+            dragTab.addEventListener('mousedown', (e) => {
+              e.stopPropagation();
+              startDesktopDrag(e, ann, el);
+            });
+            el.appendChild(dragTab);
+          }
+
+          if (state.focusTextId === ann.id) {
+            state.focusTextId = null;
+            focusEditableTextBox(textDiv, ann.text === 'Type text here');
+          }
         } else if (ann.type === 'whiteout') {
           el.style.width = `${ann.width * state.scale}px`;
           el.style.height = `${ann.height * state.scale}px`;
@@ -1132,11 +1267,10 @@
           img.src = ann.dataUrl;
           img.alt = 'Inserted PDF Image';
           img.className = 'w-full h-full block pointer-events-none';
-          img.style.objectFit = 'fill'; // Allows user to freely stretch/customize width & height as desired
+          img.style.objectFit = 'fill';
           el.appendChild(img);
         }
 
-        // Live Position & Size HUD Badge on Selected Item
         if (isSelected) {
           const hud = document.createElement('div');
           hud.className = 'annotation-hud';
@@ -1148,7 +1282,6 @@
           el.appendChild(hud);
         }
 
-        // Add 6 Corner/Edge Resize Handles for Boxes & Images (Desktop Mouse Drag)
         if (ann.type === 'image' || ann.type === 'whiteout') {
           ['nw', 'ne', 'sw', 'se', 'e', 's'].forEach((dir) => {
             const handle = document.createElement('div');
@@ -1159,18 +1292,17 @@
           });
         }
 
-        // Select Item on Click/Tap
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           if (state.selectedId !== ann.id) {
             state.selectedId = ann.id;
+            if (ann.type === 'text') state.focusTextId = ann.id;
             updatePropertiesBar();
             renderAnnotationsLayer();
           }
         });
 
-        // Enable Mouse Dragging ONLY on Desktop/Laptop (Never on Mobile Touch)
-        if (!mobileMode) {
+        if (!mobileMode && ann.type !== 'text') {
           el.addEventListener('mousedown', (e) => {
             if (e.target.classList.contains('resize-handle')) return;
             startDesktopDrag(e, ann, el);
@@ -1181,7 +1313,6 @@
       });
     }
 
-    // Desktop Mouse Dragging
     function startDesktopDrag(e, ann, el) {
       if (e.button !== 0) return;
       if (state.selectedId !== ann.id) {
@@ -1227,7 +1358,6 @@
       window.addEventListener('mouseup', onMouseUp);
     }
 
-    // Desktop Mouse Resizing (Free Custom Size by default; proportional if Aspect Lock enabled)
     function startDesktopResize(e, ann, dir) {
       e.stopPropagation();
       e.preventDefault();
@@ -1243,11 +1373,7 @@
         const dx = (ev.clientX - startX) / state.scale;
         const dy = (ev.clientY - startY) / state.scale;
 
-        let newX = origX;
-        let newY = origY;
-        let newW = origW;
-        let newH = origH;
-
+        let newX = origX, newY = origY, newW = origW, newH = origH;
         if (dir.includes('e')) newW = Math.max(16, origW + dx);
         if (dir.includes('s')) newH = Math.max(16, origH + dy);
         if (dir.includes('w')) {
@@ -1259,7 +1385,6 @@
           newY = origY + (origH - newH);
         }
 
-        // Only lock ratio if user explicitly enabled Aspect Lock
         if (state.aspectLocked && (dir === 'nw' || dir === 'ne' || dir === 'sw' || dir === 'se')) {
           newH = Math.max(16, newW / ratio);
           if (dir.includes('n')) newY = origY + (origH - newH);
@@ -1284,8 +1409,8 @@
       window.addEventListener('mouseup', onMouseUp);
     }
 
-    // Canvas Stage Click Handler (Add Text / Whiteout / Deselect)
-    pdfStageWrapper.addEventListener('click', (e) => {
+    // Canvas Tap/Click Handler (Works seamlessly on mobile touch & desktop click)
+    pdfStageWrapper.addEventListener('click', async (e) => {
       if (e.target !== pdfRenderCanvas && e.target !== annotationsLayer) return;
 
       const rect = pdfStageWrapper.getBoundingClientRect();
@@ -1293,23 +1418,27 @@
       const clickY = (e.clientY - rect.top) / state.scale;
 
       if (state.activeTool === 'text') {
+        const detectedFontSize = await detectFontSizeAtPoint(state.currentPage, clickX, clickY);
+
         const newText = {
           id: generateId(),
           page: state.currentPage,
           type: 'text',
           x: Math.max(10, clickX),
-          y: Math.max(10, clickY - 10),
-          text: 'Double-tap or type text',
-          fontSize: 16,
+          y: Math.max(10, clickY - detectedFontSize * 0.65),
+          text: 'Type text here',
+          fontSize: detectedFontSize,
           color: '#0f172a',
           bold: false
         };
         state.annotations.push(newText);
         state.selectedId = newText.id;
+        state.focusTextId = newText.id;
         setActiveTool('select');
         pushHistory();
         updatePropertiesBar();
         renderAnnotationsLayer();
+        showToast(`Added text (${detectedFontSize}pt)`);
       } else if (state.activeTool === 'whiteout') {
         const newWhiteout = {
           id: generateId(),
@@ -1328,12 +1457,12 @@
         renderAnnotationsLayer();
       } else {
         state.selectedId = null;
+        state.focusTextId = null;
         updatePropertiesBar();
         renderAnnotationsLayer();
       }
     });
 
-    // Tool Switching
     function setActiveTool(tool) {
       state.activeTool = tool;
       document.querySelectorAll('.tool-btn').forEach((btn) => {
@@ -1348,8 +1477,8 @@
 
       const hints = {
         select: 'Select an item on the page to move, crop, or customize its size, or choose Add Text / Add Image.',
-        text: 'Tap or click anywhere on the PDF page to place your text.',
-        whiteout: 'Tap or click on the PDF page to place a whiteout mask over old text.'
+        text: 'Tap anywhere on the PDF page to add text (automatically matches nearby PDF font size).',
+        whiteout: 'Tap on the PDF page to place a whiteout mask over old text.'
       };
       document.getElementById('tool-instruction-text').textContent = hints[tool] || hints.select;
     }
@@ -1358,7 +1487,6 @@
       btn.addEventListener('click', () => setActiveTool(btn.dataset.tool));
     });
 
-    // Update Contextual Properties Bar
     function updatePropertiesBar() {
       const selected = state.annotations.find((a) => a.id === state.selectedId);
       const defaultHint = document.getElementById('default-tool-hint');
@@ -1404,15 +1532,34 @@
       }
     }
 
-    // Text Property Listeners
     document.getElementById('prop-font-size').addEventListener('input', (e) => {
       const ann = state.annotations.find((a) => a.id === state.selectedId);
       if (ann && ann.type === 'text') {
-        ann.fontSize = Math.max(6, Number(e.target.value) || 16);
+        ann.fontSize = Math.max(4, Math.min(200, Number(e.target.value) || 12));
         renderAnnotationsLayer();
       }
     });
     document.getElementById('prop-font-size').addEventListener('change', pushHistory);
+
+    document.getElementById('font-size-minus').addEventListener('click', () => {
+      const ann = state.annotations.find((a) => a.id === state.selectedId);
+      if (ann && ann.type === 'text') {
+        ann.fontSize = Math.max(4, +(ann.fontSize - 1).toFixed(1));
+        document.getElementById('prop-font-size').value = ann.fontSize;
+        pushHistory();
+        renderAnnotationsLayer();
+      }
+    });
+
+    document.getElementById('font-size-plus').addEventListener('click', () => {
+      const ann = state.annotations.find((a) => a.id === state.selectedId);
+      if (ann && ann.type === 'text') {
+        ann.fontSize = Math.min(200, +(ann.fontSize + 1).toFixed(1));
+        document.getElementById('prop-font-size').value = ann.fontSize;
+        pushHistory();
+        renderAnnotationsLayer();
+      }
+    });
 
     document.getElementById('prop-font-color').addEventListener('input', (e) => {
       const ann = state.annotations.find((a) => a.id === state.selectedId);
@@ -1433,7 +1580,34 @@
       }
     });
 
-    // Free Custom Width & Height Inputs (User can enter ANY width & height independently!)
+    document.getElementById('prop-copy-text').addEventListener('click', async () => {
+      const ann = state.annotations.find((a) => a.id === state.selectedId);
+      if (!ann || ann.type !== 'text') return;
+      try {
+        await navigator.clipboard.writeText(ann.text || '');
+        showToast('Text copied!');
+      } catch (err) {
+        showToast('Press and hold text to copy');
+      }
+    });
+
+    document.getElementById('prop-paste-text').addEventListener('click', async () => {
+      const ann = state.annotations.find((a) => a.id === state.selectedId);
+      if (!ann || ann.type !== 'text') return;
+      try {
+        const clipText = await navigator.clipboard.readText();
+        if (clipText) {
+          ann.text = (ann.text === 'Type text here' ? '' : ann.text) + clipText;
+          state.focusTextId = ann.id;
+          pushHistory();
+          renderAnnotationsLayer();
+          showToast('Pasted text!');
+        }
+      } catch (err) {
+        showToast('Tap inside text box to paste');
+      }
+    });
+
     document.getElementById('prop-box-width').addEventListener('input', (e) => {
       const ann = state.annotations.find((a) => a.id === state.selectedId);
       if (!ann || (ann.type !== 'image' && ann.type !== 'whiteout')) return;
@@ -1462,7 +1636,6 @@
     });
     document.getElementById('prop-box-height').addEventListener('change', pushHistory);
 
-    // Aspect Ratio Lock Toggle (Default Free Size)
     document.getElementById('prop-aspect-lock').addEventListener('click', () => {
       state.aspectLocked = !state.aspectLocked;
       document.getElementById('aspect-lock-icon').textContent = state.aspectLocked ? '🔒' : '🔓';
@@ -1470,7 +1643,6 @@
       showToast(state.aspectLocked ? 'Aspect ratio locked' : 'Free custom sizing enabled');
     });
 
-    // Quick W-/W+/H-/H+ Size Stepper Buttons (Independent Width & Height Control)
     function adjustBoxSize(dw, dh) {
       const ann = state.annotations.find((a) => a.id === state.selectedId);
       if (!ann || (ann.type !== 'image' && ann.type !== 'whiteout')) return;
@@ -1497,7 +1669,6 @@
     document.getElementById('size-h-minus').addEventListener('click', () => { adjustBoxSize(0, -1); pushHistory(); });
     document.getElementById('size-h-plus').addEventListener('click', () => { adjustBoxSize(0, 1); pushHistory(); });
 
-    // 4-Way Hold-to-Move Nudge Buttons with Visual Pulse Feedback
     function nudgeSelected(dir) {
       const ann = state.annotations.find((a) => a.id === state.selectedId);
       if (!ann) return;
@@ -1548,18 +1719,17 @@
       btn.addEventListener('touchend', endHold);
     });
 
-    // Delete Selected Annotation
     document.getElementById('delete-selected-btn').addEventListener('click', () => {
       if (!state.selectedId) return;
       state.annotations = state.annotations.filter((a) => a.id !== state.selectedId);
       state.selectedId = null;
+      state.focusTextId = null;
       pushHistory();
       updatePropertiesBar();
       renderAnnotationsLayer();
       showToast('Item removed');
     });
 
-    // Insert Image File onto Current Page
     function insertImageFromDataUrl(dataUrl, dropX = 70, dropY = 90) {
       const img = new Image();
       img.onload = () => {
@@ -1586,7 +1756,7 @@
         pushHistory();
         updatePropertiesBar();
         renderAnnotationsLayer();
-        showToast('Image added! Crop or customize width & height freely.');
+        showToast('Image added!');
       };
       img.src = dataUrl;
     }
@@ -1604,7 +1774,7 @@
       e.target.value = '';
     });
 
-    // Interactive Image Crop Modal Logic
+    // Crop Modal Logic
     const cropModal = document.getElementById('crop-modal');
     const cropPreviewImg = document.getElementById('crop-preview-img');
     const cropBox = document.getElementById('crop-box');
@@ -1618,9 +1788,7 @@
 
       const scaleX = cs.naturalWidth / Math.max(1, cs.displayWidth);
       const scaleY = cs.naturalHeight / Math.max(1, cs.displayHeight);
-      const outW = Math.round(cs.w * scaleX);
-      const outH = Math.round(cs.h * scaleY);
-      document.getElementById('crop-dimensions-badge').textContent = `${outW} × ${outH} px`;
+      document.getElementById('crop-dimensions-badge').textContent = `${Math.round(cs.w * scaleX)} × ${Math.round(cs.h * scaleY)} px`;
     }
 
     document.getElementById('prop-crop-image').addEventListener('click', () => {
@@ -1657,13 +1825,9 @@
 
         const cs = state.cropState;
         const val = btn.dataset.cropRatio;
-        if (val === 'free') {
-          cs.ratio = null;
-        } else if (val === 'original') {
-          cs.ratio = cs.naturalWidth / Math.max(1, cs.naturalHeight);
-        } else {
-          cs.ratio = parseFloat(val);
-        }
+        if (val === 'free') cs.ratio = null;
+        else if (val === 'original') cs.ratio = cs.naturalWidth / Math.max(1, cs.naturalHeight);
+        else cs.ratio = parseFloat(val);
 
         if (cs.ratio) {
           let newW = cs.w;
@@ -1681,55 +1845,40 @@
 
     document.getElementById('crop-inset-btn').addEventListener('click', () => {
       const cs = state.cropState;
-      const step = 12;
       if (cs.w > 48 && cs.h > 48) {
-        cs.x += step;
-        cs.y += step;
-        cs.w -= step * 2;
-        cs.h -= step * 2;
+        cs.x += 12; cs.y += 12; cs.w -= 24; cs.h -= 24;
         updateCropBoxUI();
       }
     });
 
     document.getElementById('crop-expand-btn').addEventListener('click', () => {
       const cs = state.cropState;
-      const step = 12;
-      cs.x = Math.max(0, cs.x - step);
-      cs.y = Math.max(0, cs.y - step);
-      cs.w = Math.min(cs.displayWidth - cs.x, cs.w + step * 2);
-      cs.h = Math.min(cs.displayHeight - cs.y, cs.h + step * 2);
+      cs.x = Math.max(0, cs.x - 12);
+      cs.y = Math.max(0, cs.y - 12);
+      cs.w = Math.min(cs.displayWidth - cs.x, cs.w + 24);
+      cs.h = Math.min(cs.displayHeight - cs.y, cs.h + 24);
       updateCropBoxUI();
     });
 
     document.getElementById('crop-reset-btn').addEventListener('click', () => {
       const cs = state.cropState;
-      cs.x = 0;
-      cs.y = 0;
-      cs.w = cs.displayWidth;
-      cs.h = cs.displayHeight;
+      cs.x = 0; cs.y = 0; cs.w = cs.displayWidth; cs.h = cs.displayHeight;
       updateCropBoxUI();
     });
 
-    // Drag & Resize Crop Box (Mouse + Touch)
     function initCropPointerEvents() {
-      let mode = null; // 'move' or handle dir
+      let mode = null;
       let startX = 0, startY = 0;
       let orig = { x: 0, y: 0, w: 0, h: 0 };
-
       const getPoint = (e) => (e.touches && e.touches[0]) ? e.touches[0] : e;
 
       const onStart = (e) => {
         const pt = getPoint(e);
-        if (e.target.classList.contains('crop-handle')) {
-          mode = e.target.dataset.cropDir;
-        } else if (e.target === cropBox) {
-          mode = 'move';
-        } else {
-          return;
-        }
+        if (e.target.classList.contains('crop-handle')) mode = e.target.dataset.cropDir;
+        else if (e.target === cropBox) mode = 'move';
+        else return;
         e.preventDefault();
-        startX = pt.clientX;
-        startY = pt.clientY;
+        startX = pt.clientX; startY = pt.clientY;
         const cs = state.cropState;
         orig = { x: cs.x, y: cs.y, w: cs.w, h: cs.h };
       };
@@ -1749,16 +1898,12 @@
           if (mode.includes('e')) nw = Math.min(cs.displayWidth - orig.x, Math.max(24, orig.w + dx));
           if (mode.includes('s')) nh = Math.min(cs.displayHeight - orig.y, Math.max(24, orig.h + dy));
           if (mode.includes('w')) {
-            const maxShift = orig.w - 24;
-            const shift = Math.min(maxShift, Math.max(-orig.x, dx));
-            nx = orig.x + shift;
-            nw = orig.w - shift;
+            const shift = Math.min(orig.w - 24, Math.max(-orig.x, dx));
+            nx = orig.x + shift; nw = orig.w - shift;
           }
           if (mode.includes('n')) {
-            const maxShift = orig.h - 24;
-            const shift = Math.min(maxShift, Math.max(-orig.y, dy));
-            ny = orig.y + shift;
-            nh = orig.h - shift;
+            const shift = Math.min(orig.h - 24, Math.max(-orig.y, dy));
+            ny = orig.y + shift; nh = orig.h - shift;
           }
           if (cs.ratio) {
             nh = Math.min(cs.displayHeight - ny, nw / cs.ratio);
@@ -1780,9 +1925,7 @@
     }
     initCropPointerEvents();
 
-    function closeCropModal() {
-      cropModal.classList.add('hidden');
-    }
+    function closeCropModal() { cropModal.classList.add('hidden'); }
     document.getElementById('close-crop-modal-btn').addEventListener('click', closeCropModal);
     document.getElementById('cancel-crop-btn').addEventListener('click', closeCropModal);
 
@@ -1799,25 +1942,23 @@
       const sh = Math.max(1, Math.round(cs.h * scaleY));
 
       const offCanvas = document.createElement('canvas');
-      offCanvas.width = sw;
-      offCanvas.height = sh;
+      offCanvas.width = sw; offCanvas.height = sh;
       const offCtx = offCanvas.getContext('2d');
       offCtx.drawImage(cropPreviewImg, sx, sy, sw, sh, 0, 0, sw, sh);
 
       ann.dataUrl = offCanvas.toDataURL('image/png');
       ann.naturalWidth = sw;
       ann.naturalHeight = sh;
-      // Adjust displayed height proportionally to cropped shape (user can still resize freely afterwards)
       ann.height = Math.max(16, Math.round(ann.width * (sh / sw)));
 
       pushHistory();
       updatePropertiesBar();
       renderAnnotationsLayer();
       closeCropModal();
-      showToast('Image cropped! Resize width & height freely anytime.');
+      showToast('Image cropped successfully!');
     });
 
-    // Zoom Controls + Mobile Two-Finger Pinch-to-Zoom
+    // Zoom Controls & Mobile Pinch-to-Zoom
     document.getElementById('zoom-in-btn').addEventListener('click', () => {
       state.fitToWidth = false;
       state.scale = Math.min(3.0, +(state.scale + 0.2).toFixed(2));
@@ -1835,7 +1976,6 @@
       renderCurrentPage();
     });
 
-    // Two-finger pinch zoom on PDF stage
     let initialPinchDist = null;
     let initialPinchScale = 1;
     canvasScrollContainer.addEventListener('touchstart', (e) => {
@@ -1851,23 +1991,20 @@
       if (e.touches.length === 2 && initialPinchDist) {
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.hypot(dx, dy);
-        const factor = dist / initialPinchDist;
+        const factor = Math.hypot(dx, dy) / initialPinchDist;
         state.fitToWidth = false;
         state.scale = Math.min(3.0, Math.max(0.4, +(initialPinchScale * factor).toFixed(2)));
         renderCurrentPage();
       }
     }, { passive: true });
 
-    canvasScrollContainer.addEventListener('touchend', () => {
-      initialPinchDist = null;
-    });
+    canvasScrollContainer.addEventListener('touchend', () => { initialPinchDist = null; });
 
-    // Page Navigation
     document.getElementById('prev-page-btn').addEventListener('click', () => {
       if (state.currentPage > 1) {
         state.currentPage--;
         state.selectedId = null;
+        state.focusTextId = null;
         updatePropertiesBar();
         renderCurrentPage();
       }
@@ -1877,12 +2014,12 @@
       if (state.currentPage < state.totalPages) {
         state.currentPage++;
         state.selectedId = null;
+        state.focusTextId = null;
         updatePropertiesBar();
         renderCurrentPage();
       }
     });
 
-    // File Upload & Multi-PDF Handling
     async function handlePDFFiles(files) {
       const pdfFiles = Array.from(files).filter((f) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
       if (!pdfFiles.length) return;
@@ -1914,30 +2051,20 @@
       e.target.value = '';
     });
 
-    // Merge PDF Button
     document.getElementById('merge-pdf-btn').addEventListener('click', () => {
       document.getElementById('pdf-merge-input').click();
     });
     document.getElementById('pdf-merge-input').addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files);
-      for (const f of files) {
-        const buf = await f.arrayBuffer();
-        await mergePDFBytes(buf);
+      for (const f of Array.from(e.target.files)) {
+        await mergePDFBytes(await f.arrayBuffer());
       }
       e.target.value = '';
     });
 
-    // Drag & Drop PDFs & Images Anywhere
     const heroDropzone = document.getElementById('hero-dropzone');
     ['dragenter', 'dragover'].forEach((evtName) => {
-      heroDropzone.addEventListener(evtName, (e) => {
-        e.preventDefault();
-        heroDropzone.classList.add('drop-active');
-      });
-      pdfStageWrapper.addEventListener(evtName, (e) => {
-        e.preventDefault();
-        pdfStageWrapper.classList.add('ring-4', 'ring-blue-500/40');
-      });
+      heroDropzone.addEventListener(evtName, (e) => { e.preventDefault(); heroDropzone.classList.add('drop-active'); });
+      pdfStageWrapper.addEventListener(evtName, (e) => { e.preventDefault(); pdfStageWrapper.classList.add('ring-4', 'ring-blue-500/40'); });
     });
 
     ['dragleave', 'drop'].forEach((evtName) => {
@@ -1968,17 +2095,11 @@
       }
 
       const pdfFiles = files.filter((f) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
-      if (pdfFiles.length) {
-        await handlePDFFiles(pdfFiles);
-      }
+      if (pdfFiles.length) await handlePDFFiles(pdfFiles);
     });
 
-    // Try Multi-Page Sample Buttons (Hero + Header)
     async function triggerLoadSamplePDF(e) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       showToast('Loading 3-page sample PDF...');
       const sampleBytes = await createSamplePDFBytes();
       await loadPDFFromBytes(sampleBytes, true);
@@ -1988,7 +2109,6 @@
     document.getElementById('loadSampleBtn').addEventListener('click', triggerLoadSamplePDF);
     document.getElementById('header-sample-btn').addEventListener('click', triggerLoadSamplePDF);
 
-    // Export & Download Multi-Page PDF via pdf-lib
     function hexToRgbNorm(hex) {
       const clean = hex.replace('#', '');
       const num = parseInt(clean, 16);
@@ -2038,10 +2158,7 @@
             });
           } else if (ann.type === 'image' && ann.dataUrl) {
             const isPng = ann.dataUrl.startsWith('data:image/png');
-            const embeddedImg = isPng
-              ? await pdfDoc.embedPng(ann.dataUrl)
-              : await pdfDoc.embedJpg(ann.dataUrl);
-
+            const embeddedImg = isPng ? await pdfDoc.embedPng(ann.dataUrl) : await pdfDoc.embedJpg(ann.dataUrl);
             page.drawImage(embeddedImg, {
               x: ann.x,
               y: pageH - ann.y - ann.height,
@@ -2061,14 +2178,12 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        showToast('Downloaded oriohub-edited-document.pdf!');
+        showToast('Downloaded PDF successfully!');
       } catch (err) {
-        console.error(err);
-        showToast('Error exporting PDF. Ensure images are PNG or JPG.');
+        showToast('Error exporting PDF.');
       }
     });
 
-    // Responsive Re-Render on Window Resize
     let resizeTimer = null;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
@@ -2077,7 +2192,6 @@
       }, 150);
     });
 
-    // Initialize Workspace with a Ready-to-Edit Document on Page Load
     (async function initApp() {
       const initialBytes = await createSamplePDFBytes();
       await loadPDFFromBytes(initialBytes, true);
