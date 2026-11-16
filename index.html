@@ -114,6 +114,201 @@
       scrollbar-width: none;
     }
 
+    /* === Custom Floating Navy Pill Toolbar & Mobile Sticky Bar === */
+    .orio-toolbar-dock {
+      position: sticky;
+      top: 64px; /* Sits right below the 64px (h-16) sticky header */
+      z-index: 35;
+      background-color: #f1f5f9;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .orio-pill-bar {
+      background-color: #132245;
+      color: #ffffff;
+      border-radius: 18px;
+      padding: 8px 14px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.28), 0 4px 10px -4px rgba(15, 23, 42, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .orio-pill-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .orio-tool-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 62px;
+      height: 50px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .orio-tool-item:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .orio-tool-item.active-tool {
+      background-color: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45);
+    }
+
+    .orio-divider {
+      width: 1px;
+      height: 32px;
+      background-color: rgba(148, 163, 184, 0.28);
+      flex-shrink: 0;
+    }
+
+    .orio-circle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 9999px;
+      background-color: #243763;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .orio-circle-btn:hover:not(:disabled) {
+      background-color: #324a82;
+    }
+
+    .orio-circle-btn:disabled {
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .orio-zoom-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 6px;
+      border-radius: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background-color: rgba(255, 255, 255, 0.04);
+      flex-shrink: 0;
+    }
+
+    .orio-download-btn {
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background-color: #059669;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+      transition: background-color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .orio-download-btn:hover {
+      background-color: #10b981;
+    }
+
+    .orio-word-btn {
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background-color: #2563eb;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      transition: background-color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .orio-word-btn:hover {
+      background-color: #3b82f6;
+    }
+
+    /* Mobile-specific fixed sizing & sticky positioning */
+    @media (max-width: 767px) {
+      .orio-toolbar-dock {
+        top: 64px;
+        padding: 6px 8px;
+      }
+
+      .orio-pill-bar {
+        border-radius: 14px;
+        padding: 6px 10px;
+        gap: 6px;
+      }
+
+      .orio-tool-item {
+        min-width: 54px;
+        height: 44px;
+        padding: 3px 6px;
+        font-size: 10px;
+        gap: 3px;
+      }
+
+      .orio-tool-item svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .orio-divider {
+        height: 26px;
+      }
+
+      .orio-circle-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      .orio-zoom-pill {
+        height: 34px;
+        padding: 0 4px;
+      }
+
+      .orio-download-btn, .orio-word-btn {
+        height: 36px;
+        padding: 0 10px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+
+      /* Keep contextual Move / Size / Font bar pinned right under the navy bar on mobile */
+      #properties-bar {
+        position: sticky;
+        top: 134px;
+        z-index: 34;
+        box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08);
+      }
+    }
+
     /* Annotation Overlays */
     .pdf-annotation {
       position: absolute;
@@ -338,7 +533,7 @@
     </div>
   </section>
 
-  <!-- Google AdSense Banner #1 
+  <!-- Google AdSense Banner #1 -->
   <aside aria-label="Advertisement" class="max-w-5xl mx-auto px-4 sm:px-6 mb-8 w-full min-h-[90px]">
     <div class="w-full min-h-[90px] bg-white border border-slate-200/80 rounded-xl p-2 flex flex-col items-center justify-center overflow-hidden">
       <span class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Advertisement</span>
@@ -350,71 +545,99 @@
            data-full-width-responsive="true"></ins>
     </div>
   </aside>
-  -->
+  
 
   <!-- Interactive PDF Editor Workspace -->
   <main id="editor-workspace" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-14">
-    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-clip">
 
-      <!-- Main Editor Toolbar -->
-      <div class="bg-slate-900 text-white px-3 py-2.5 sm:px-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800">
-        <!-- Left Tools -->
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button type="button" data-tool="select" class="tool-btn active bg-blue-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Select & Inspect">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" /></svg>
-            <span>Select</span>
-          </button>
+      <!-- Sticky Floating Navy Pill Toolbar -->
+      <div class="orio-toolbar-dock">
+        <div class="orio-pill-bar no-scrollbar">
 
-          <button type="button" data-tool="text" class="tool-btn bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Click on PDF page to add text (auto-matches PDF font size)">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M12 6v14" /></svg>
-            <span>Add Text</span>
-          </button>
-
-          <button type="button" data-tool="whiteout" class="tool-btn bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Cover old text with whiteout box">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2" /></svg>
-            <span>Whiteout</span>
-          </button>
-
-          <button type="button" id="add-image-tool-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition" title="Upload or drop an image onto this page">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span>Add Image</span>
-          </button>
-        </div>
-
-        <!-- Center Undo / Redo & Zoom Controls -->
-        <div class="flex flex-wrap items-center gap-1.5">
-          <div class="flex items-center bg-slate-800 rounded-lg p-0.5">
-            <button type="button" id="undo-btn" disabled class="px-2 py-1 rounded-md text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 transition" title="Undo (Ctrl+Z)">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4" /></svg>
-              <span class="hidden sm:inline">Undo</span>
+          <!-- Left Vertical Icon-Over-Text Tools with Dividers -->
+          <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+            <button type="button" data-tool="select" class="tool-btn orio-tool-item active-tool" title="Select & Inspect">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" />
+              </svg>
+              <span>Select</span>
             </button>
-            <button type="button" id="redo-btn" disabled class="px-2 py-1 rounded-md text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-1 transition" title="Redo (Ctrl+Y)">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a5 5 0 00-5 5v2m15-7l-4-4m4 4l-4 4" /></svg>
-              <span class="hidden sm:inline">Redo</span>
+
+            <div class="orio-divider"></div>
+
+            <button type="button" data-tool="text" class="tool-btn orio-tool-item" title="Click on PDF page to add text">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M12 6v14" />
+              </svg>
+              <span>Add Text</span>
+            </button>
+
+            <div class="orio-divider"></div>
+
+            <button type="button" data-tool="whiteout" class="tool-btn orio-tool-item" title="Cover old text with whiteout box">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <rect x="4" y="5" width="16" height="14" rx="3" />
+              </svg>
+              <span>Whiteout</span>
+            </button>
+
+            <div class="orio-divider"></div>
+
+            <button type="button" id="add-image-tool-btn" class="orio-tool-item" title="Upload or drop an image onto this page">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Add Image</span>
             </button>
           </div>
 
-          <div class="flex items-center bg-slate-800 rounded-lg p-0.5">
-            <button type="button" id="zoom-out-btn" class="px-2 py-1 rounded-md text-xs font-bold text-slate-200 hover:bg-slate-700 transition" title="Zoom Out">−</button>
-            <button type="button" id="zoom-fit-btn" class="px-2 py-1 rounded-md text-[11px] font-semibold text-blue-300 hover:bg-slate-700 transition" title="Fit Page to Screen">Fit</button>
-            <span id="zoom-level-label" class="px-1.5 text-[11px] font-mono text-slate-300">100%</span>
-            <button type="button" id="zoom-in-btn" class="px-2 py-1 rounded-md text-xs font-bold text-slate-200 hover:bg-slate-700 transition" title="Zoom In">+</button>
-          </div>
-        </div>
+          <!-- Center Circular Undo/Redo & Bordered Zoom Pill -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" id="undo-btn" disabled class="orio-circle-btn" title="Undo (Ctrl+Z)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a5 5 0 015 5v2M3 10l4-4m-4 4l4 4" />
+              </svg>
+            </button>
 
-        <!-- Right Export Action -->
-        <div class="flex items-center gap-1.5">
-          <button type="button" id="export-pdf-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-            <span>Download PDF</span>
-          </button>
+            <button type="button" id="redo-btn" disabled class="orio-circle-btn" title="Redo (Ctrl+Y)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a5 5 0 00-5 5v2m15-7l-4-4m4 4l-4 4" />
+              </svg>
+            </button>
+
+            <div class="orio-zoom-pill">
+              <button type="button" id="zoom-out-btn" class="w-7 h-7 rounded-md text-sm font-bold text-slate-200 hover:bg-white/10 transition" title="Zoom Out">−</button>
+              <span id="zoom-level-label" class="px-1.5 text-xs font-semibold text-white">100%</span>
+              <button type="button" id="zoom-fit-btn" class="px-1.5 py-0.5 rounded text-[10px] font-semibold text-blue-300 hover:bg-white/10 transition" title="Fit Page to Screen">Fit</button>
+              <button type="button" id="zoom-in-btn" class="w-7 h-7 rounded-md text-sm font-bold text-slate-200 hover:bg-white/10 transition" title="Zoom In">+</button>
+            </div>
+          </div>
+
+          <!-- Right Download CTAs (PDF & Word) -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" id="export-pdf-btn" class="orio-download-btn">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Download PDF</span>
+            </button>
+
+            <button type="button" id="export-word-btn" class="orio-word-btn" title="Download document as Word file">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span>Download Word</span>
+            </button>
+          </div>
+
         </div>
       </div>
 
       <!-- Contextual Properties & Mobile Positioning Bar -->
       <div id="properties-bar" class="bg-slate-50 border-b border-slate-200 px-3 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div id="default-tool-hint" class="text-slate-600 flex items-center gap-2">
-          <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
+          <span class="inline-block w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
           <span id="tool-instruction-text">Select an item on the page to move, crop, or customize its size, or choose <strong>Add Text</strong> / <strong>Add Image</strong>.</span>
         </div>
 
@@ -528,7 +751,7 @@
     </div>
   </main>
 
-  <!-- Google AdSense Banner #2 
+  <!-- Google AdSense Banner #2 -->
   <aside aria-label="Advertisement" class="max-w-5xl mx-auto px-4 sm:px-6 mb-12 w-full min-h-[90px]">
     <div class="w-full min-h-[90px] bg-white border border-slate-200/80 rounded-xl p-2 flex flex-col items-center justify-center overflow-hidden">
       <span class="text-[10px] uppercase tracking-wider text-slate-400 mb-1">Advertisement</span>
@@ -540,7 +763,7 @@
            data-full-width-responsive="true"></ins>
     </div>
   </aside>
-  -->
+  
 
   <!-- Features Section -->
   <section id="features" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-slate-200">
@@ -599,7 +822,6 @@
         <summary class="font-bold text-sm sm:text-base text-slate-900 cursor-pointer">Does OrioHub PDF Editor work on mobile phones and tablets?</summary>
         <p class="mt-2 text-xs sm:text-sm text-slate-600">Yes. Mobile devices get crisp high-DPI rendering, pinch-to-zoom, and button-controlled positioning and sizing so scrolling never shifts your layout accidentally.</p>
       </details>
-
     </div>
   </section>
 
@@ -1486,13 +1708,7 @@
     function setActiveTool(tool) {
       state.activeTool = tool;
       document.querySelectorAll('.tool-btn').forEach((btn) => {
-        if (btn.dataset.tool === tool) {
-          btn.classList.add('bg-blue-600', 'text-white');
-          btn.classList.remove('bg-slate-800', 'text-slate-200');
-        } else {
-          btn.classList.remove('bg-blue-600', 'text-white');
-          btn.classList.add('bg-slate-800', 'text-slate-200');
-        }
+        btn.classList.toggle('active-tool', btn.dataset.tool === tool);
       });
 
       const hints = {
@@ -2201,6 +2417,70 @@
         showToast('Downloaded PDF successfully!');
       } catch (err) {
         showToast('Error exporting PDF.');
+      }
+    });
+
+    // Download as Word (.doc) Handler
+    document.getElementById('export-word-btn').addEventListener('click', async () => {
+      if (!state.pdfJsDoc) return;
+      showToast('Extracting text to Word file...');
+
+      try {
+        let fullHtmlContent = `
+          <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+          <head>
+            <meta charset='utf-8'>
+            <title>OrioHub Document Export</title>
+            <style>
+              body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; color: #111827; line-height: 1.5; margin: 1in; }
+              h2 { color: #1e3a8a; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 24px; }
+              p { margin-bottom: 12px; white-space: pre-wrap; }
+              .page-break { page-break-after: always; }
+            </style>
+          </head>
+          <body>
+        `;
+
+        for (let p = 1; p <= state.totalPages; p++) {
+          const page = await state.pdfJsDoc.getPage(p);
+          const textContent = await page.getTextContent();
+          const pageAnns = state.annotations.filter((a) => a.page === p);
+
+          fullHtmlContent += `<h2>Page ${p}</h2>`;
+
+          let pageText = textContent.items.map((i) => i.str).join(' ');
+          if (pageText.trim()) {
+            fullHtmlContent += `<p>${pageText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
+          }
+
+          if (pageAnns.length > 0) {
+            fullHtmlContent += `<h3>Added / Edited Content (Page ${p}):</h3>`;
+            pageAnns.forEach((ann) => {
+              if (ann.type === 'text') {
+                fullHtmlContent += `<p style="color: ${ann.color}; font-weight: ${ann.bold ? 'bold' : 'normal'};">${(ann.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
+              }
+            });
+          }
+
+          if (p < state.totalPages) {
+            fullHtmlContent += `<br clear="all" style="page-break-before:always;" />`;
+          }
+        }
+
+        fullHtmlContent += `</body></html>`;
+
+        const blob = new Blob(['\ufeff' + fullHtmlContent], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'oriohub-edited-document.doc';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Downloaded Word document successfully!');
+      } catch (err) {
+        showToast('Error generating Word document.');
       }
     });
 
